@@ -1,18 +1,38 @@
 <?php
 
 // ===== RAILWAY PERSISTENT STORAGE FIX =====
-// Use Railway volume if available, otherwise use local directory
+// Try multiple possible storage locations
+$possible_paths = [];
+
+// 1. Railway volume mount (if configured)
 $railway_volume = getenv('RAILWAY_VOLUME_MOUNT_PATH');
-if ($railway_volume && is_dir($railway_volume) && is_writable($railway_volume)) {
-    $data_dir = $railway_volume . '/admin_data';
-} else {
-    $data_dir = __DIR__ . '/admin_data';
+if ($railway_volume) {
+    $possible_paths[] = $railway_volume . '/admin_data';
 }
 
-// Create data directory if it doesn't exist
-if (!file_exists($data_dir)) {
-    mkdir($data_dir, 0755, true);
+// 2. Railway default volume path
+$possible_paths[] = '/app/data/admin_data';
+
+// 3. Local directory (fallback)
+$possible_paths[] = __DIR__ . '/admin_data';
+
+// Find first writable path
+$data_dir = null;
+foreach ($possible_paths as $path) {
+    if (file_exists($path) || @mkdir($path, 0755, true)) {
+        $data_dir = $path;
+        break;
+    }
 }
+
+// Final fallback - use sys_get_temp_dir() if all else fails
+if (!$data_dir) {
+    $data_dir = sys_get_temp_dir() . '/hyperion_admin_data';
+    @mkdir($data_dir, 0755, true);
+}
+
+// Log the data directory being used (for debugging)
+error_log("Using data directory: " . $data_dir);
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
