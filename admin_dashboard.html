@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>HYPERION NEXUS | Phantom Control Suite v7.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: radial-gradient(circle at 10% 20%, #05070F, #0A0E1A); background-attachment: fixed; }
+        .animated-bg { background: linear-gradient(125deg, #0B0F19 0%, #111827 40%, #0F172A 80%, #020617 100%); background-size: 300% 300%; animation: slowFlow 18s ease infinite; }
+        @keyframes slowFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .glass-premium { background: rgba(12, 16, 28, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        .glass-card { background: rgba(15, 19, 32, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.1); transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1); animation: fadeSlideUp 0.6s ease backwards; }
+        .glass-card:hover { border-color: rgba(56, 189, 248, 0.4); box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(59, 130, 246, 0.2); transform: translateY(-3px); }
+        .tab-container { display: flex; gap: 12px; border-bottom: 1px solid rgba(59, 130, 246, 0.2); margin-bottom: 24px; padding-bottom: 12px; flex-wrap: wrap; }
+        .tab-btn { background: transparent; border: none; padding: 10px 24px; font-weight: 600; font-size: 0.9rem; border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #94A3B8; }
+        .tab-btn.active { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.15)); border: 1px solid rgba(59, 130, 246, 0.4); }
+        .tab-btn.active span { background: linear-gradient(135deg, #60A5FA, #C084FC); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .tab-btn:hover:not(.active) { color: #CBD5E1; }
+        .tab-content { display: none; animation: fadeInScale 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        .tab-content.active { display: block; }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
+        .login-nexus { background: rgba(8, 11, 22, 0.96); backdrop-filter: blur(24px); border: 1px solid rgba(59, 130, 246, 0.4); box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); animation: floatIn 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes floatIn { from { opacity: 0; transform: scale(0.96) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .sidebar-nexus { background: rgba(6, 9, 18, 0.92); backdrop-filter: blur(20px); border-right: 1px solid rgba(59, 130, 246, 0.15); }
+        .sidebar-item { transition: all 0.25s ease; border-radius: 14px; margin: 5px 12px; font-weight: 500; cursor: pointer; }
+        .sidebar-item.active { background: linear-gradient(105deg, rgba(59, 130, 246, 0.18), rgba(139, 92, 246, 0.08)); border-left: 3px solid #3B82F6; }
+        .sidebar-item.active i, .sidebar-item.active span { color: #A5D8FF !important; }
+        .sidebar-item:hover:not(.active) { background: rgba(59, 130, 246, 0.08); transform: translateX(5px); }
+        .sidebar-item i, .sidebar-item span { color: #94A3B8; }
+        .stat-card { background: linear-gradient(145deg, rgba(18, 22, 40, 0.9), rgba(10, 14, 28, 0.9)); backdrop-filter: blur(8px); border: 1px solid rgba(59, 130, 246, 0.25); transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+        .stat-card:hover { transform: translateY(-5px) scale(1.01); border-color: #3B82F6; box-shadow: 0 20px 30px -15px rgba(59, 130, 246, 0.3); }
+        .btn-primary { background: linear-gradient(105deg, #3B82F6, #7C3AED); transition: all 0.25s ease; box-shadow: 0 2px 12px rgba(59, 130, 246, 0.4); cursor: pointer; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(59, 130, 246, 0.5); }
+        .btn-danger { background: linear-gradient(105deg, #DC2626, #B91C1C); cursor: pointer; }
+        .btn-success { background: linear-gradient(105deg, #10B981, #059669); cursor: pointer; }
+        .btn-warning { background: linear-gradient(105deg, #F59E0B, #D97706); cursor: pointer; }
+        .input-modern { background: #0B0F1A; border: 1.5px solid #1E2A4A; border-radius: 14px; padding: 0.75rem 1rem; color: #F1F5F9; transition: all 0.2s; }
+        .input-modern:focus { border-color: #3B82F6; outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .data-table thead tr th { background: rgba(8, 12, 22, 0.9); padding: 14px 18px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #8BB8FF; border-bottom: 1px solid #2D3A5E; text-align: left; }
+        .data-table tbody tr td { color: #CBD5E1; padding: 12px 18px; border-bottom: 1px solid rgba(45, 58, 94, 0.3); }
+        .data-table tbody tr:hover { background: rgba(59, 130, 246, 0.07); }
+        .badge-premium { background: linear-gradient(115deg, #F59E0B, #EF4444); padding: 3px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+        .badge-bypass { background: linear-gradient(115deg, #8B5CF6, #EC4899); box-shadow: 0 0 8px rgba(139, 92, 246, 0.5); animation: gentlePulse 2.2s infinite; padding: 3px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+        .badge-unlimited { background: linear-gradient(115deg, #10B981, #059669); padding: 3px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+        .badge-active { background: linear-gradient(115deg, #22C55E, #16A34A); padding: 3px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+        @keyframes gentlePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; box-shadow: 0 0 12px rgba(139, 92, 246, 0.7); } }
+        .online-dot { width: 9px; height: 9px; background: #22C55E; border-radius: 50%; box-shadow: 0 0 8px #22C55E; animation: livePulse 1.3s infinite; display: inline-block; }
+        @keyframes livePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); opacity: 0.8; } }
+        .kill-active { animation: redAlert 1s infinite; border-color: #FF4444 !important; }
+        @keyframes redAlert { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); } }
+        .toast-premium { background: rgba(12, 16, 28, 0.98); backdrop-filter: blur(16px); border-left: 4px solid #3B82F6; border-radius: 14px; animation: slideInRight 0.3s ease; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        .progress-gradient { background: linear-gradient(90deg, #3B82F6, #A855F7); border-radius: 30px; height: 6px; }
+        .gradient-text { background: linear-gradient(105deg, #60A5FA, #C084FC, #F472B6); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: textFlow 4s ease infinite; }
+        @keyframes textFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .status-chip { display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0E1220; }
+        ::-webkit-scrollbar-thumb { background: #2D4A7A; border-radius: 10px; }
+        .particle { position: absolute; background: radial-gradient(circle, rgba(59, 130, 246, 0.5), transparent); border-radius: 50%; pointer-events: none; animation: particleDrift 22s infinite linear; }
+        @keyframes particleDrift { 0% { transform: translateY(0) translateX(0); opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.2; } 100% { transform: translateY(-110vh) translateX(50px); opacity: 0; } }
+        .modal-animate { animation: modalPop 0.3s cubic-bezier(0.34, 1.2, 0.64, 1); }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .code-block { background: rgba(0, 0, 0, 0.4); border-radius: 12px; font-family: 'Courier New', monospace; }
+        .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: 0.3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .slider { background: linear-gradient(105deg, #3B82F6, #7C3AED); }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .hidden { display: none; }
+        button, .sidebar-item, .tab-btn, .btn-primary, .btn-danger, .btn-success, .btn-warning { cursor: pointer; }
+        .text-light-blue { color: #93C5FD; }
+    </style>
+</head>
+<body class="animated-bg">
+
+<div id="particlesContainer" style="position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;"></div>
+
+<div id="loginOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50">
+    <div class="login-nexus rounded-3xl p-9 w-full max-w-md">
+        <div class="text-center mb-7">
+            <div class="w-24 h-24 mx-auto mb-5 relative">
+                <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-purple-700 rounded-2xl blur-2xl opacity-70 animate-pulse"></div>
+                <div class="relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center w-full h-full shadow-2xl border border-blue-500/30">
+                    <i class="fas fa-crown text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-400"></i>
+                </div>
+            </div>
+            <h2 class="text-4xl font-black"><span class="gradient-text">HYPERION</span></h2>
+            <p class="text-slate-400 text-sm mt-2 tracking-wider">Phantom Nexus · v7.1</p>
+            <div class="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-4 rounded-full"></div>
+        </div>
+        <div class="space-y-5">
+            <div class="relative">
+                <i class="fas fa-user-secret absolute left-4 top-4 text-slate-500 text-sm"></i>
+                <input type="text" id="loginUser" placeholder="Administrator ID" class="w-full pl-11 input-modern">
+            </div>
+            <div class="relative">
+                <i class="fas fa-fingerprint absolute left-4 top-4 text-slate-500 text-sm"></i>
+                <input type="password" id="loginPass" placeholder="Access Key" class="w-full pl-11 input-modern">
+            </div>
+            <button id="doLoginBtn" class="btn-primary w-full py-3.5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3">
+                <i class="fas fa-arrow-right-to-bracket"></i>
+                <span>Enter Nexus</span>
+            </button>
+        </div>
+        <div class="mt-7 flex items-center justify-center gap-4 text-[11px] text-slate-500 font-mono">
+            <i class="fas fa-shield-haltered text-blue-500"></i>
+            <span>SECURE GATEWAY</span>
+            <i class="fas fa-circle text-[3px]"></i>
+            <span>ZERO TRUST</span>
+        </div>
+    </div>
+</div>
+
+<div id="appContainer" class="hidden">
+    <div class="flex min-h-screen">
+        <aside class="w-64 sidebar-nexus fixed h-full overflow-y-auto z-20">
+            <div class="p-5 border-b border-blue-900/30">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-700 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-brain text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-xl tracking-tight"><span class="gradient-text">PHANTOM</span></div>
+                        <div class="text-slate-500 text-[9px] tracking-widest">NEXUS ADMIN</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="killSwitchStatusBar" class="mx-3 mt-5 p-3 rounded-xl transition-all duration-300 bg-gradient-to-r from-red-950/30 to-red-900/10 border border-red-500/30">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-skull-crossbones text-red-400 text-xs"></i>
+                        <span class="text-xs text-slate-300 font-semibold">KILL SWITCH</span>
+                    </div>
+                    <div id="ksStatusIndicator" class="status-chip bg-slate-800/50 text-slate-300">
+                        <span>INACTIVE</span>
+                    </div>
+                </div>
+                <div id="ksReasonDisplay" class="text-[10px] text-red-300/70 mt-2 hidden"></div>
+            </div>
+            
+            <nav class="py-5 px-2 space-y-1.5">
+                <a href="#" data-section="dashboard" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl"><i class="fas fa-chart-line w-4"></i><span>Analytics</span></a>
+                <a href="#" data-section="keys" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-key w-4"></i><span>License Vault</span></a>
+                <a href="#" data-section="devices" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-microchip w-4"></i><span>Device Grid</span></a>
+                <a href="#" data-section="allowed" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-check-double w-4 text-emerald-400"></i><span>Whitelist</span></a>
+                <a href="#" data-section="blacklists" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-ban w-4 text-rose-400"></i><span>Blacklist</span></a>
+                <a href="#" data-section="maintenance" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-wrench w-4 text-amber-400"></i><span>Maintenance</span></a>
+                <a href="#" data-section="loader" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-cubes w-4 text-purple-400"></i><span>Loader & Multi</span></a>
+                <a href="#" data-section="backups" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-database w-4"></i><span>Backups</span></a>
+                <a href="#" data-section="proxies" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-network-wired w-4"></i><span>Proxy Pool</span></a>
+                <a href="#" data-section="logs" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-scroll w-4"></i><span>Audit Logs</span></a>
+                <a href="#" data-section="security" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-shield-alt w-4"></i><span>Security</span></a>
+                <a href="#" data-section="admin" class="sidebar-item flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl"><i class="fas fa-user-astronaut w-4"></i><span>Admin Core</span></a>
+            </nav>
+            
+            <div class="p-4 border-t border-blue-900/30 mt-5 space-y-3">
+                <button id="emergencyKillBtn" class="w-full bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"><i class="fas fa-skull"></i> KILL LOADER</button>
+                <button id="logoutBtn" class="w-full bg-slate-800/60 hover:bg-red-500/20 text-red-300 text-sm font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 border border-red-500/20 transition-all"><i class="fas fa-sign-out-alt"></i> Exit Session</button>
+            </div>
+        </aside>
+
+        <main class="ml-64 flex-1 p-7 relative">
+            <div id="pageTitle" class="mb-7 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center backdrop-blur-sm border border-blue-500/30"><i class="fas fa-chart-simple text-blue-300 text-xl"></i></div>
+                <h1 class="text-3xl font-extrabold gradient-text">DASHBOARD</h1>
+            </div>
+            <div id="dynamicContent">
+                <div class="flex justify-center items-center h-80 flex-col gap-4">
+                    <div class="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+                    <span class="text-slate-400 text-sm animate-pulse">Initializing secure environment...</span>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 space-y-3"></div>
+</div>
+
+<script>
+    const API_URL = 'admin_api.php';
+    let killSwitchMonitor = null;
+    let currentKS = false;
+    let currentActiveSection = 'dashboard';
+    let currentTab = 'api';
+    
+    async function apiCall(action, data = {}, isFile = false) {
+        let body, headers = {};
+        if (isFile) {
+            body = new FormData();
+            body.append('action', action);
+            for (let [k, v] of Object.entries(data)) body.append(k, v);
+        } else {
+            body = new URLSearchParams();
+            body.append('action', action);
+            for (let [k, v] of Object.entries(data)) body.append(k, v);
+            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        }
+        const res = await fetch(API_URL, { method: 'POST', body, headers, credentials: 'include' });
+        const json = await res.json();
+        if (!json.success && (json.error === 'Unauthorized' || json.redirect === 'login')) {
+            window.location.reload();
+            throw new Error('Session expired');
+        }
+        return json;
+    }
+    
+    function showToast(msg, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        const icon = type === 'error' ? 'fa-circle-exclamation' : (type === 'success' ? 'fa-check-circle' : 'fa-info-circle');
+        const color = type === 'error' ? '#EF4444' : (type === 'success' ? '#10B981' : '#3B82F6');
+        toast.className = `toast-premium rounded-xl px-5 py-3.5 max-w-md text-sm shadow-2xl flex items-center gap-3`;
+        toast.style.borderLeftColor = color;
+        toast.innerHTML = `<i class="fas ${icon}" style="color:${color}"></i> <span class="text-slate-200 font-medium">${msg}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('opacity-0', 'transition-all', 'duration-300'), 3800);
+        setTimeout(() => toast.remove(), 4500);
+    }
+    
+    async function syncKillSwitch() {
+        try {
+            const res = await apiCall('get_kill_switch_status');
+            if (res?.success) {
+                updateKillUI(res.kill_switch === true, res.reason || '');
+                currentKS = res.kill_switch === true;
+            }
+        } catch(e) { console.warn(e); }
+    }
+    
+    function updateKillUI(active, reason) {
+        const indicator = document.getElementById('ksStatusIndicator');
+        const reasonDiv = document.getElementById('ksReasonDisplay');
+        const bar = document.getElementById('killSwitchStatusBar');
+        if (active) {
+            indicator.innerHTML = '<i class="fas fa-skull-crossbones text-xs mr-1"></i><span>ACTIVE</span>';
+            indicator.className = 'status-chip bg-red-500/20 text-red-300 border border-red-500';
+            bar.classList.add('kill-active');
+            if (reason) { reasonDiv.innerHTML = `<i class="fas fa-info-circle mr-1"></i> ${reason}`; reasonDiv.classList.remove('hidden'); }
+            else reasonDiv.classList.add('hidden');
+            if (!currentKS) showToast('⚠️ KILL SWITCH ACTIVATED — Loader operations halted', 'error');
+        } else {
+            indicator.innerHTML = '<span>INACTIVE</span>';
+            indicator.className = 'status-chip bg-slate-800/50 text-slate-300';
+            bar.classList.remove('kill-active');
+            reasonDiv.classList.add('hidden');
+        }
+    }
+    
+    async function activateKill() {
+        const reason = prompt('☠️ EMERGENCY KILL SWITCH ☠️\nThis will block the LOADER immediately.\nMulti-tool remains functional.\nEnter reason:', 'Security breach');
+        if (reason === null) return;
+        const btn = document.getElementById('emergencyKillBtn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Activating...';
+        btn.disabled = true;
+        try {
+            const res = await apiCall('activate_kill_switch', { reason });
+            if (res.success) {
+                showToast(`💀 KILL SWITCH ACTIVE | Reason: ${reason}`, 'error');
+                await syncKillSwitch();
+                if (currentActiveSection) loadSection(currentActiveSection);
+            } else showToast('Activation failed: ' + (res.error || 'unknown'), 'error');
+        } catch(e) { showToast(e.message, 'error'); }
+        finally { btn.innerHTML = orig; btn.disabled = false; }
+    }
+    
+    async function deactivateKill() {
+        if (!confirm('⚠️ DEACTIVATE KILL SWITCH? This will restore Loader access. Proceed?')) return;
+        const res = await apiCall('deactivate_kill_switch');
+        if (res.success) {
+            showToast('✅ Kill switch deactivated. Loader access restored.', 'success');
+            await syncKillSwitch();
+            if (currentActiveSection) loadSection(currentActiveSection);
+        } else showToast('Deactivation failed', 'error');
+    }
+    
+    function startKillMonitor() {
+        if (killSwitchMonitor) clearInterval(killSwitchMonitor);
+        killSwitchMonitor = setInterval(() => syncKillSwitch(), 7500);
+    }
+    
+    async function renderDashboard() {
+        const stats = await apiCall('dashboard_stats');
+        const activeStats = await apiCall('get_active_users_stats');
+        
+        const onlinePercent = stats.activeDevices > 0 ? Math.round((activeStats.currently_active || 0) / stats.activeDevices * 100) : 0;
+        const quotaPercent = stats.total_limit > 0 ? Math.round((stats.total_used || 0) / stats.total_limit * 100) : 0;
+        
+        let platformRows = '';
+        if (activeStats.platforms) {
+            for (const [platform, count] of Object.entries(activeStats.platforms)) {
+                const perc = activeStats.currently_active > 0 ? Math.round((count / activeStats.currently_active) * 100) : 0;
+                platformRows += `<div class="flex justify-between items-center py-2"><span class="text-slate-300 text-sm">${platform}</span><div class="flex items-center gap-3"><span class="text-blue-400 font-mono">${count}</span><div class="w-28 bg-slate-700 rounded-full h-2"><div class="progress-gradient" style="width: ${perc}%"></div></div></div></div>`;
+            }
+        }
+        
+        const html = `
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-5 mb-8">
+                <div class="stat-card p-4 rounded-2xl hover-lift"><i class="fas fa-chess-queen text-blue-400 text-2xl mb-2 block"></i><p class="text-xs text-slate-400 uppercase font-bold">Total Keys</p><p class="text-3xl font-black text-blue-300">${stats.totalKeys}</p></div>
+                <div class="stat-card p-4 rounded-2xl hover-lift"><i class="fas fa-laptop-code text-purple-400 text-2xl mb-2"></i><p class="text-xs text-slate-400 font-bold">Active Devices</p><p class="text-3xl font-black text-purple-300">${stats.activeDevices}</p></div>
+                <div class="stat-card p-4 rounded-2xl hover-lift"><i class="fas fa-user-astronaut text-emerald-400 text-2xl mb-2"></i><p class="text-xs text-slate-400 font-bold">Online Now</p><p class="text-3xl font-black text-emerald-300">${activeStats.currently_active || 0}</p><p class="text-xs text-slate-500">${onlinePercent}% of fleet</p></div>
+                <div class="stat-card p-4 rounded-2xl hover-lift"><i class="fas fa-chart-line text-cyan-400 text-2xl mb-2"></i><p class="text-xs text-slate-400 font-bold">24h Activity</p><p class="text-3xl font-black text-cyan-300">${activeStats.last_24h_activity || 0}</p></div>
+                <div class="stat-card p-4 rounded-2xl hover-lift"><i class="fas fa-biohazard text-red-400 text-2xl mb-2"></i><p class="text-xs text-slate-400 font-bold">Leaks</p><p class="text-3xl font-black text-red-300">${stats.totalLeaks}</p></div>
+                <div class="stat-card p-4 rounded-2xl hover-lift"><i class="fas fa-globe text-teal-400 text-2xl mb-2"></i><p class="text-xs text-slate-400 font-bold">Proxies</p><p class="text-3xl font-black text-teal-300">${stats.activeProxies}/${stats.totalProxies}</p></div>
+                <div class="stat-card p-4 rounded-2xl hover-lift"><i class="fas fa-crown text-amber-400 text-2xl mb-2"></i><p class="text-xs text-slate-400 font-bold">Bypass</p><p class="text-3xl font-black text-amber-300">${stats.bypassDevices || 0}</p></div>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-7 mb-8">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="font-bold text-slate-200 flex items-center mb-5"><i class="fas fa-users mr-2 text-emerald-400"></i>Live Sessions <span class="ml-auto text-xs text-slate-400"><span class="online-dot mr-1"></span> ${activeStats.currently_active || 0} active</span></div>
+                    <div class="max-h-80 overflow-y-auto space-y-3">
+                        ${activeStats.users && activeStats.users.length > 0 ? activeStats.users.map(user => `
+                            <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/40 hover:bg-slate-700/40 transition-all">
+                                <div><div class="font-mono text-xs text-slate-200 font-bold">${user.license_key}</div><div class="text-xs text-slate-400 mt-1"><i class="fas fa-desktop mr-1"></i>${user.device_name} | ${user.platform}</div></div>
+                                <div class="text-right"><div class="text-xs text-slate-500">${user.last_seen}</div><span class="inline-flex items-center gap-1 text-emerald-400 text-xs"><span class="online-dot"></span> Online</span></div>
+                            </div>
+                        `).join('') : '<div class="text-center text-slate-500 py-10"><i class="fas fa-ghost text-5xl mb-3 opacity-40"></i><p>No active sessions</p></div>'}
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="font-bold text-slate-200 flex items-center mb-5"><i class="fas fa-chart-pie mr-2 text-purple-400"></i>Platform Distribution</div>
+                    ${platformRows || '<div class="text-slate-400 text-center py-8">No distribution data</div>'}
+                    <div class="mt-5 pt-4 border-t border-slate-700/50 flex justify-between text-sm"><span class="text-slate-400">Total Devices:</span><span class="text-slate-200 font-bold">${stats.activeDevices}</span><span class="text-slate-400">Online Rate:</span><span class="text-emerald-400 font-bold">${onlinePercent}%</span></div>
+                </div>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-7">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="font-bold text-slate-200"><i class="fas fa-shield-haltered mr-2 text-blue-400"></i>System Fortress</div>
+                    <div class="mt-5 space-y-3">
+                        <div class="flex justify-between"><span class="text-slate-400"><i class="fas fa-skull mr-2 text-red-400"></i>Blacklisted Keys</span><span class="text-pink-300 font-mono">${stats.blacklistedKeys}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400"><i class="fas fa-crown mr-2 text-amber-400"></i>Bypass Keys</span><span class="text-amber-300 font-mono">${stats.bypassKeys || 0}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400"><i class="fas fa-hammer mr-2 text-orange-400"></i>Force Maintenance</span><span class="${stats.force_maintenance ? 'text-orange-400' : 'text-emerald-400'} font-bold">${stats.force_maintenance ? 'ENABLED' : 'DISABLED'}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400"><i class="fas fa-code-branch mr-2 text-cyan-400"></i>Loader Version</span><span class="text-cyan-300 font-mono">${stats.current_loader_version}</span></div>
+                        <div class="mt-3 pt-2"><div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Quota Consumption</span><span class="text-slate-200">${(stats.total_used || 0).toLocaleString()} / ${(stats.total_limit || 0).toLocaleString()}</span></div><div class="w-full bg-slate-700 rounded-full h-2"><div class="progress-gradient" style="width: ${quotaPercent}%"></div></div></div>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="font-bold text-slate-200"><i class="fas fa-bolt mr-2 text-amber-400"></i>Quick Command</div>
+                    <div class="grid grid-cols-2 gap-3 mt-5">
+                        <button onclick="quickResetUsage()" class="bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-3 py-2.5 rounded-xl text-sm font-medium text-amber-300 transition-all"><i class="fas fa-rotate-left mr-1"></i> Reset Limits</button>
+                        <button onclick="quickExportJSON()" class="bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 px-3 py-2.5 rounded-xl text-sm font-medium text-indigo-300 transition-all"><i class="fas fa-download mr-1"></i> Export DB</button>
+                        <button onclick="createFullBackup()" class="bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-3 py-2.5 rounded-xl text-sm font-medium text-emerald-300 transition-all"><i class="fas fa-archive mr-1"></i> Backup Now</button>
+                        <button onclick="refreshDashboardNow()" class="bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 px-3 py-2.5 rounded-xl text-sm font-medium text-blue-300 transition-all"><i class="fas fa-sync-alt mr-1"></i> Refresh</button>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="font-bold text-slate-200"><i class="fas fa-skull-crossbones mr-2 text-red-400"></i>Kill Switch Console</div>
+                    <div class="mt-4 flex justify-between p-3 rounded-xl ${stats.kill_switch ? 'bg-red-500/15 border border-red-500/40' : 'bg-slate-800/30'}"><span class="text-slate-300">Status</span><span class="font-black ${stats.kill_switch ? 'text-red-400 animate-pulse' : 'text-emerald-400'}">${stats.kill_switch ? 'LOCKDOWN' : 'NOMINAL'}</span></div>
+                    ${stats.kill_switch_reason ? `<div class="mt-2 p-2 bg-red-500/10 rounded-lg text-xs text-red-300"><i class="fas fa-info-circle mr-1"></i> ${stats.kill_switch_reason}</div>` : ''}
+                    <button onclick="${stats.kill_switch ? 'deactivateKill()' : 'activateKill()'}" class="w-full mt-4 ${stats.kill_switch ? 'bg-amber-500/20 hover:bg-amber-500/30' : 'btn-danger'} py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"><i class="fas ${stats.kill_switch ? 'fa-undo-alt' : 'fa-biohazard'}"></i> ${stats.kill_switch ? 'DEACTIVATE' : 'ACTIVATE'}</button>
+                    <p class="text-[10px] text-slate-500 mt-3 text-center"><i class="fas fa-info-circle"></i> Only blocks Loader — Multi retains functionality</p>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center"><i class="fas fa-chart-line text-blue-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Analytics Dashboard</h1>`;
+    }
+    
+    window.quickResetUsage = async() => { if(confirm('Reset all usage quotas?')) { await apiCall('reset_all_limits'); showToast('All limits have been reset', 'success'); renderDashboard(); } };
+    window.quickExportJSON = async() => { const res = await apiCall('export_db'); const blob = new Blob([JSON.stringify(res.data, null, 2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `nexus_backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href); showToast('Database exported successfully', 'success'); };
+    window.createFullBackup = async() => { await apiCall('create_enhanced_backup'); showToast('Full backup created', 'success'); if(currentActiveSection === 'backups') loadSection('backups'); };
+    window.refreshDashboardNow = async() => { showToast('Refreshing live data...', 'info'); await renderDashboard(); };
+    
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.dataset.tab === tab) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        document.querySelectorAll('.tab-content').forEach(content => {
+            if (content.id === `tab-${tab}`) {
+                content.classList.add('active');
+            } else {
+                content.classList.remove('active');
+            }
+        });
+    }
+    
+    async function renderKeys() {
+        const d = await apiCall('list_keys');
+        
+        const apiKeys = d.keys.filter(k => k.key.startsWith('API-KEY-'));
+        const codmKeys = d.keys.filter(k => k.key.startsWith('CODM-'));
+        
+        const html = `
+            <div class="glass-card rounded-2xl p-6">
+                <div class="tab-container">
+                    <button class="tab-btn active" data-tab="api" onclick="switchTab('api')">
+                        <span><i class="fas fa-key mr-2"></i>API Keys (${apiKeys.length})</span>
+                    </button>
+                    <button class="tab-btn" data-tab="codm" onclick="switchTab('codm')">
+                        <span><i class="fas fa-gamepad mr-2"></i>CODM Licenses (${codmKeys.length})</span>
+                    </button>
+                </div>
+                
+                <div id="tab-api" class="tab-content active">
+                    <div class="overflow-x-auto">
+                        <table class="data-table w-full">
+                            <thead><tr><th>Key</th><th>Label</th><th>Limit</th><th>Used</th><th>Remaining</th><th>Devices</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody>
+                                ${apiKeys.map(key => `
+                                    <tr>
+                                        <td class="font-mono text-xs text-cyan-300">${key.key}</td>
+                                        <td>${key.label}</td>
+                                        <td>${key.limit.toLocaleString()}</td>
+                                        <td>${key.used.toLocaleString()}</td>
+                                        <td class="${key.limit - key.used < 100 ? 'text-red-400' : 'text-green-400'}">${(key.limit - key.used).toLocaleString()}</td>
+                                        <td>${key.device_count}/${key.max_devices}</td>
+                                        <td class="text-xs">${key.expiry_date}</td>
+                                        <td>${key.blacklisted ? '<span class="badge-premium">BLACKLISTED</span>' : (key.bypass_all ? '<span class="badge-bypass">BYPASS</span>' : '<span class="badge-active">ACTIVE</span>')}</td>
+                                        <td><button onclick="deleteKey(${key.id})" class="text-red-400 hover:text-red-300 transition-colors"><i class="fas fa-trash"></i></button></td>
+                                    </tr>
+                                `).join('')}
+                                ${apiKeys.length === 0 ? '<tr><td colspan="9" class="text-center text-slate-500 py-8">No API keys found</td>' : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-700/50">
+                        <button onclick="showCreateKeyModal('api')" class="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold transition-all"><i class="fas fa-plus mr-2"></i>Create API Key</button>
+                    </div>
+                </div>
+                
+                <div id="tab-codm" class="tab-content">
+                    <div class="overflow-x-auto">
+                        <table class="data-table w-full">
+                            <thead><tr><th>Key</th><th>Label</th><th>Status</th><th>Devices</th><th>Expiry</th><th>Created</th><th>Actions</th></tr></thead>
+                            <tbody>
+                                ${codmKeys.map(key => `
+                                    <tr>
+                                        <td class="font-mono text-xs text-cyan-300">${key.key}</td>
+                                        <td>${key.label}</td>
+                                        <td>${key.blacklisted ? '<span class="badge-premium">BLACKLISTED</span>' : (key.bypass_all ? '<span class="badge-bypass">BYPASS</span>' : '<span class="badge-unlimited">UNLIMITED</span>')}</td>
+                                        <td>${key.device_count}/${key.max_devices}</td>
+                                        <td class="text-xs">${key.expiry_date}</td>
+                                        <td class="text-xs">${key.created_at || 'N/A'}</td>
+                                        <td><button onclick="deleteKey(${key.id})" class="text-red-400 hover:text-red-300 transition-colors"><i class="fas fa-trash"></i></button></td>
+                                    </tr>
+                                `).join('')}
+                                ${codmKeys.length === 0 ? '<tr><td colspan="7" class="text-center text-slate-500 py-8">No CODM licenses found</td>' : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-700/50">
+                        <button onclick="showCreateKeyModal('codm')" class="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold transition-all"><i class="fas fa-plus mr-2"></i>Create CODM License</button>
+                        <p class="text-xs text-slate-500 mt-3"><i class="fas fa-infinity mr-1 text-emerald-400"></i> CODM licenses have <span class="text-emerald-400 font-bold">NO QUOTA LIMITS</span> - Unlimited checks</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center"><i class="fas fa-key text-blue-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">License Vault</h1>`;
+        window.switchTab = switchTab;
+    }
+    
+    function showCreateKeyModal(type) {
+        const modalHtml = `
+            <div id="keyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50" onclick="if(event.target===this)closeKeyModal()">
+                <div class="glass-card rounded-2xl p-6 w-full max-w-md modal-animate">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold gradient-text">${type === 'api' ? 'Create API Key' : 'Create CODM License'}</h3>
+                        <button onclick="closeKeyModal()" class="text-slate-400 hover:text-white transition-colors"><i class="fas fa-times text-xl"></i></button>
+                    </div>
+                    <div class="space-y-4">
+                        <div><label class="text-slate-300 text-sm block mb-1">Label</label><input type="text" id="keyLabel" class="input-modern w-full" placeholder="e.g., Premium Key"></div>
+                        ${type === 'api' ? `<div><label class="text-slate-300 text-sm block mb-1">Limit (checks)</label><input type="number" id="keyLimit" class="input-modern w-full" value="999999" placeholder="999999"></div>` : ''}
+                        <div><label class="text-slate-300 text-sm block mb-1">Expiry</label>
+                            <select id="expiryType" class="input-modern w-full">
+                                <option value="permanent">Permanent</option>
+                                <option value="days">Days</option>
+                                <option value="months">Months</option>
+                                <option value="years">Years</option>
+                            </select>
+                        </div>
+                        <div id="expiryValueDiv" class="hidden"><input type="number" id="expiryValue" class="input-modern w-full" placeholder="Value"></div>
+                        <div><label class="text-slate-300 text-sm block mb-1">Max Devices</label><input type="number" id="maxDevices" class="input-modern w-full" value="8" placeholder="8"></div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="bypassAll"> <label class="text-slate-300 text-sm">Bypass all restrictions (Super Admin)</label></div>
+                        <button onclick="createKeyWithType('${type}')" class="btn-primary w-full py-2.5 rounded-xl mt-4 transition-all"><i class="fas fa-plus mr-2"></i>Create</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.getElementById('expiryType').addEventListener('change', function() {
+            document.getElementById('expiryValueDiv').classList.toggle('hidden', this.value === 'permanent');
+        });
+    }
+    
+    window.closeKeyModal = function() {
+        const modal = document.getElementById('keyModal');
+        if (modal) modal.remove();
+    };
+    
+    window.createKeyWithType = async function(type) {
+        const label = document.getElementById('keyLabel')?.value;
+        const expiryType = document.getElementById('expiryType')?.value;
+        const expiryValue = document.getElementById('expiryValue')?.value;
+        const maxDevices = document.getElementById('maxDevices')?.value;
+        const bypassAll = document.getElementById('bypassAll')?.checked;
+        
+        if (!label) { showToast('Label is required', 'error'); return; }
+        
+        if (type === 'api') {
+            const limit = parseInt(document.getElementById('keyLimit')?.value);
+            const res = await apiCall('create_key', { label, limit, expiry_type: expiryType, expiry_value: expiryValue, max_devices: maxDevices, bypass_all: bypassAll });
+            if (res.success) {
+                showToast(`API Key created: ${res.api_key}`, 'success');
+                closeKeyModal();
+                renderKeys();
+            } else {
+                showToast('Creation failed: ' + (res.error || 'Unknown'), 'error');
+            }
+        } else {
+            const res = await apiCall('create_codm_key', { label, expiry_type: expiryType, expiry_value: expiryValue, max_devices: maxDevices, bypass_all: bypassAll });
+            if (res.success) {
+                showToast(`CODM License created: ${res.api_key}`, 'success');
+                closeKeyModal();
+                renderKeys();
+            } else {
+                showToast('Creation failed: ' + (res.error || 'Unknown'), 'error');
+            }
+        }
+    };
+    
+    window.deleteKey = async function(keyId) {
+        if (confirm('Delete this key permanently?')) {
+            const res = await apiCall('delete_key', { key_id: keyId });
+            if (res.success) {
+                showToast('Key deleted successfully', 'success');
+                renderKeys();
+            } else {
+                showToast('Delete failed', 'error');
+            }
+        }
+    };
+    
+    async function renderDevices() { 
+        const d = await apiCall('list_devices'); 
+        const html = `
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="font-bold text-slate-200 mb-5"><i class="fas fa-microchip mr-2 text-purple-400"></i>Device Inventory (${d.devices.length})</h3>
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead><tr><th>HWID</th><th>Device Name</th><th>Platform</th><th>License</th><th>Last Seen</th><th>Usage</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                            ${d.devices.map(dev => `
+                                <tr>
+                                    <td class="font-mono text-xs">${dev.hwid}</td>
+                                    <td>${dev.device_name}</td>
+                                    <td>${dev.platform}</td>
+                                    <td>${dev.license_label}</td>
+                                    <td class="text-xs">${dev.last_seen}</td>
+                                    <td>${dev.usage_count}</td>
+                                    <td>${dev.is_bypass ? '<span class="badge-bypass">BYPASS</span>' : (dev.is_allowed ? '<span class="text-emerald-400">WHITELISTED</span>' : '<span class="badge-active">ACTIVE</span>')}</td>
+                                    <td><button onclick="unbindDevice('${dev.full_hwid}')" class="text-red-400 hover:text-red-300 transition-colors"><i class="fas fa-unlink"></i></button></td>
+                                </tr>
+                            `).join('')}
+                            ${d.devices.length === 0 ? '<tr><td colspan="8" class="text-center text-slate-500 py-8">No devices found</td>' : ''}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-purple-600/20 flex items-center justify-center"><i class="fas fa-microchip text-purple-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Device Grid</h1>`;
+    }
+    
+    async function renderAllowedDevices() { 
+        const d = await apiCall('get_allowed_devices'); 
+        const html = `
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="font-bold text-slate-200 mb-5"><i class="fas fa-check-circle mr-2 text-emerald-400"></i>Whitelist (${d.devices.length})</h3>
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead><tr><th>HWID</th><th>Label</th><th>Bypass All</th><th>Added</th><th>Last Used</th><th>Use Count</th><th>Action</th></tr></thead>
+                        <tbody>
+                            ${d.devices.map(dev => `
+                                <tr>
+                                    <td class="font-mono text-xs">${dev.hwid.substring(0, 48)}...</td>
+                                    <td>${dev.label}</td>
+                                    <td>${dev.bypass_all ? '<span class="badge-bypass">BYPASS</span>' : '<span class="text-slate-400">NO</span>'}</td>
+                                    <td class="text-xs">${dev.added_date}</td>
+                                    <td class="text-xs">${dev.last_used || 'Never'}</td>
+                                    <td>${dev.use_count || 0}</td>
+                                    <td><button onclick="removeAllowedDevice('${dev.hwid}')" class="text-red-400 hover:text-red-300 transition-colors"><i class="fas fa-trash"></i></button></td>
+                                </tr>
+                            `).join('')}
+                            ${d.devices.length === 0 ? '<tr><td colspan="7" class="text-center text-slate-500 py-8">No whitelisted devices</td>' : ''}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-6"><button onclick="showAddAllowedModal()" class="btn-primary px-6 py-2.5 rounded-xl transition-all"><i class="fas fa-plus mr-2"></i>Add to Whitelist</button></div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-emerald-600/20 flex items-center justify-center"><i class="fas fa-check-double text-emerald-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Whitelist Management</h1>`;
+    }
+    
+    async function renderBlacklists() { 
+        const hwidBlacklist = await apiCall('get_blacklisted_hwids');
+        const ipBlacklist = await apiCall('get_ip_blacklist');
+        const versionBlacklist = await apiCall('get_blacklisted_versions');
+        
+        const html = `
+            <div class="grid lg:grid-cols-2 gap-7">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-microchip mr-2 text-red-400"></i>HWID Blacklist (${hwidBlacklist.hwids.length})</h3>
+                    <div class="max-h-64 overflow-y-auto space-y-2">
+                        ${hwidBlacklist.hwids.map(hwid => `
+                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                                <span class="font-mono text-xs">${hwid.substring(0, 32)}...</span>
+                                <button onclick="removeHwidFromBlacklist('${hwid}')" class="text-green-400 hover:text-green-300"><i class="fas fa-check"></i></button>
+                            </div>
+                        `).join('')}
+                        ${hwidBlacklist.hwids.length === 0 ? '<div class="text-center text-slate-500 py-8">No blacklisted HWIDs</div>' : ''}
+                    </div>
+                    <div class="mt-4"><button onclick="addHwidToBlacklist()" class="btn-danger px-4 py-2 rounded-xl text-sm"><i class="fas fa-plus mr-2"></i>Add HWID</button></div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-network-wired mr-2 text-red-400"></i>IP Blacklist (${ipBlacklist.ips.length})</h3>
+                    <div class="max-h-64 overflow-y-auto space-y-2">
+                        ${ipBlacklist.ips.map(ip => `
+                            <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/30">
+                                <span class="font-mono text-xs">${ip}</span>
+                                <button onclick="removeIpFromBlacklist('${ip}')" class="text-green-400 hover:text-green-300"><i class="fas fa-check"></i></button>
+                            </div>
+                        `).join('')}
+                        ${ipBlacklist.ips.length === 0 ? '<div class="text-center text-slate-500 py-8">No blacklisted IPs</div>' : ''}
+                    </div>
+                    <div class="mt-4"><button onclick="addIpToBlacklist()" class="btn-danger px-4 py-2 rounded-xl text-sm"><i class="fas fa-plus mr-2"></i>Add IP</button></div>
+                </div>
+                <div class="glass-card rounded-2xl p-6 lg:col-span-2">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-code-branch mr-2 text-red-400"></i>Version Blacklist (${versionBlacklist.versions.length})</h3>
+                    <div class="flex flex-wrap gap-2">
+                        ${versionBlacklist.versions.map(version => `
+                            <div class="flex items-center gap-2 bg-red-500/20 px-3 py-1 rounded-full">
+                                <span class="text-sm">${version}</span>
+                                <button onclick="removeVersionFromBlacklist('${version}')" class="text-green-400 hover:text-green-300"><i class="fas fa-times"></i></button>
+                            </div>
+                        `).join('')}
+                        ${versionBlacklist.versions.length === 0 ? '<div class="text-center text-slate-500 py-8 w-full">No blacklisted versions</div>' : ''}
+                    </div>
+                    <div class="mt-4"><button onclick="addVersionToBlacklist()" class="btn-danger px-4 py-2 rounded-xl text-sm"><i class="fas fa-plus mr-2"></i>Add Version</button></div>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-red-600/20 flex items-center justify-center"><i class="fas fa-ban text-red-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Blacklist Manager</h1>`;
+    }
+    
+    async function renderMaintenance() { 
+        const set = await apiCall('get_settings'); 
+        const html = `
+            <div class="grid lg:grid-cols-2 gap-7">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-wrench mr-2 text-amber-400"></i>Maintenance Mode</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span>Status</span>
+                            <span class="font-bold ${set.maintenance_mode ? 'text-amber-400' : 'text-green-400'}">${set.maintenance_mode ? 'ACTIVE' : 'INACTIVE'}</span>
+                        </div>
+                        <div><label class="text-slate-300 text-sm block mb-1">Message</label><input type="text" id="maintenanceMsg" class="input-modern w-full" value="${set.maintenance_message || ''}"></div>
+                        <button onclick="toggleMaintenanceMode()" class="btn-primary w-full py-2.5 rounded-xl">${set.maintenance_mode ? 'Disable' : 'Enable'} Maintenance</button>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-hammer mr-2 text-orange-400"></i>Force Maintenance</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span>Status</span>
+                            <span class="font-bold ${set.force_maintenance ? 'text-orange-400' : 'text-green-400'}">${set.force_maintenance ? 'ACTIVE' : 'INACTIVE'}</span>
+                        </div>
+                        ${set.force_maintenance_reason ? `<div class="p-2 bg-orange-500/10 rounded-lg text-xs text-orange-300">Reason: ${set.force_maintenance_reason}</div>` : ''}
+                        <button onclick="toggleForceMaintenance()" class="btn-warning w-full py-2.5 rounded-xl">${set.force_maintenance ? 'Disable' : 'Enable'} Force Maintenance</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-amber-600/20 flex items-center justify-center"><i class="fas fa-wrench text-amber-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Maintenance Console</h1>`;
+    }
+    
+    async function renderLoaderMulti() { 
+        const loaderInfo = await apiCall('get_loader_info');
+        const html = `
+            <div class="grid lg:grid-cols-2 gap-7">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-cube mr-2 text-purple-400"></i>Loader Arsenal</h3>
+                    <div class="space-y-4">
+                        <div class="p-3 rounded-xl bg-slate-800/30">
+                            <div class="text-sm text-slate-400">Current Version</div>
+                            <div class="text-2xl font-bold text-purple-400">${loaderInfo.version}</div>
+                            <button onclick="changeLoaderVersion()" class="mt-2 text-xs bg-purple-600/30 hover:bg-purple-600/50 px-3 py-1 rounded-lg transition-all"><i class="fas fa-edit mr-1"></i>Change Version</button>
+                        </div>
+                        <div><label class="text-slate-300 text-sm block mb-1">Upload Loader Script</label><input type="file" id="loaderFile" class="input-modern w-full"></div>
+                        <button onclick="uploadLoaderFile()" class="btn-primary w-full py-2.5 rounded-xl"><i class="fas fa-upload mr-2"></i>Upload Loader</button>
+                        <button onclick="downloadLoader()" class="bg-slate-700 hover:bg-slate-600 w-full py-2.5 rounded-xl transition-all"><i class="fas fa-download mr-2"></i>Download Current Loader</button>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-gamepad mr-2 text-pink-400"></i>Multi Tool</h3>
+                    <div class="space-y-4">
+                        <div><label class="text-slate-300 text-sm block mb-1">Upload Multi Tool</label><input type="file" id="multiFile" class="input-modern w-full"></div>
+                        <button onclick="uploadMultiFile()" class="bg-purple-600 hover:bg-purple-500 w-full py-2.5 rounded-xl transition-all"><i class="fas fa-upload mr-2"></i>Upload Multi</button>
+                        <button onclick="downloadMulti()" class="bg-slate-700 hover:bg-slate-600 w-full py-2.5 rounded-xl transition-all"><i class="fas fa-download mr-2"></i>Download Current Multi</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-purple-600/20 flex items-center justify-center"><i class="fas fa-cubes text-purple-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Loader Arsenal</h1>`;
+    }
+    
+    window.changeLoaderVersion = async function() {
+        const newVersion = prompt('Enter new loader version (e.g., 7.2.0):', '7.2.0');
+        if (!newVersion) return;
+        const res = await apiCall('update_loader_version', { version: newVersion });
+        if (res.success) {
+            showToast(`Loader version changed to ${newVersion}`, 'success');
+            renderLoaderMulti();
+            if (currentActiveSection === 'dashboard') renderDashboard();
+        } else {
+            showToast('Failed to change version', 'error');
+        }
+    };
+    
+    async function renderBackups() { 
+        const b = await apiCall('list_enhanced_backups'); 
+        const html = `
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="font-bold text-slate-200"><i class="fas fa-archive mr-2 text-sky-400"></i>Backup Vault (${b.backups.length})</h3>
+                    <button onclick="createFullBackup()" class="btn-primary px-4 py-2 rounded-xl text-sm"><i class="fas fa-plus mr-2"></i>Create Backup</button>
+                </div>
+                <div class="space-y-2 max-h-96 overflow-auto">
+                    ${b.backups.map(bk => `
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span class="text-sm font-mono">${bk.filename}</span><div class="text-xs text-slate-500">${bk.created} • ${bk.size}</div></div>
+                            <div class="flex gap-2">
+                                <button onclick="restoreBackup('${bk.filename}')" class="text-emerald-400 hover:text-emerald-300"><i class="fas fa-undo"></i></button>
+                                <button onclick="downloadBackup('${bk.filename}')" class="text-blue-400 hover:text-blue-300"><i class="fas fa-download"></i></button>
+                            </div>
+                        </div>
+                    `).join('')}
+                    ${b.backups.length === 0 ? '<div class="text-center text-slate-500 py-8">No backups found</div>' : ''}
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-sky-600/20 flex items-center justify-center"><i class="fas fa-database text-sky-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Backup Vault</h1>`;
+    }
+    
+    async function renderProxies() { 
+        const p = await apiCall('list_proxies');
+        const stats = await apiCall('get_proxy_stats');
+        const html = `
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="font-bold text-slate-200"><i class="fas fa-globe mr-2 text-teal-400"></i>Proxy Manager</h3>
+                    <div class="flex gap-2">
+                        <button onclick="autoCheckProxies()" class="bg-cyan-600 hover:bg-cyan-500 px-4 py-2 rounded-xl text-sm transition-all"><i class="fas fa-play mr-2"></i>Check All</button>
+                        <button onclick="uploadProxyFile()" class="btn-primary px-4 py-2 rounded-xl text-sm"><i class="fas fa-upload mr-2"></i>Import</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="p-3 rounded-xl bg-slate-800/30 text-center"><div class="text-xs text-slate-400">Total</div><div class="text-xl font-bold text-teal-400">${stats.summary.total_proxies}</div></div>
+                    <div class="p-3 rounded-xl bg-slate-800/30 text-center"><div class="text-xs text-slate-400">Active</div><div class="text-xl font-bold text-green-400">${stats.summary.active_proxies}</div></div>
+                    <div class="p-3 rounded-xl bg-slate-800/30 text-center"><div class="text-xs text-slate-400">Success Rate</div><div class="text-xl font-bold text-blue-400">${stats.summary.overall_success_rate}%</div></div>
+                    <div class="p-3 rounded-xl bg-slate-800/30 text-center"><div class="text-xs text-slate-400">Total Usage</div><div class="text-xl font-bold text-purple-400">${stats.summary.total_usage.toLocaleString()}</div></div>
+                </div>
+                <div class="max-h-96 overflow-y-auto space-y-2">
+                    ${p.proxies.map(proxy => `
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span class="text-sm font-mono">${proxy.url}</span><div class="text-xs text-slate-500">Added: ${proxy.added_at}</div></div>
+                            <div class="flex items-center gap-3">
+                                <span class="${proxy.status === 'active' ? 'text-green-400' : 'text-red-400'} text-xs">${proxy.status}</span>
+                                <button onclick="deleteProxy(${proxy.id})" class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('')}
+                    ${p.proxies.length === 0 ? '<div class="text-center text-slate-500 py-8">No proxies configured</div>' : ''}
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-teal-600/20 flex items-center justify-center"><i class="fas fa-network-wired text-teal-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Proxy Pool</h1>`;
+    }
+    
+    async function renderLogsLeaks() { 
+        const l = await apiCall('get_logs', {limit: 200});
+        const leaks = await apiCall('get_leaks');
+        const html = `
+            <div class="grid lg:grid-cols-2 gap-7">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-200"><i class="fas fa-history mr-2 text-amber-400"></i>Audit Trail</h3>
+                        <button onclick="clearLogs()" class="text-red-400 hover:text-red-300 text-sm"><i class="fas fa-trash mr-1"></i>Clear</button>
+                    </div>
+                    <div class="code-block h-96 overflow-auto text-xs p-4 space-y-1">
+                        ${l.logs.map(le => `<div class="border-b border-slate-700/30 py-1"><span class="text-slate-500">[${le.time}]</span> <span class="text-cyan-400">${le.type.toUpperCase()}:</span> <span class="text-slate-300">${le.message}</span></div>`).join('')}
+                        ${l.logs.length === 0 ? '<div class="text-center text-slate-500 py-8">No logs available</div>' : ''}
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-200"><i class="fas fa-biohazard mr-2 text-red-400"></i>Leak Detection</h3>
+                        <button onclick="clearLeaks()" class="text-red-400 hover:text-red-300 text-sm"><i class="fas fa-trash mr-1"></i>Clear</button>
+                    </div>
+                    <div class="max-h-96 overflow-y-auto space-y-2">
+                        ${leaks.leaks.map(leak => `
+                            <div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30">
+                                <div class="text-xs text-red-300">${leak.time}</div>
+                                <div class="text-sm text-slate-200">${leak.message}</div>
+                            </div>
+                        `).join('')}
+                        ${leaks.leaks.length === 0 ? '<div class="text-center text-slate-500 py-8">No leaks detected</div>' : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-amber-600/20 flex items-center justify-center"><i class="fas fa-scroll text-amber-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Audit & Leaks</h1>`;
+    }
+    
+    async function renderSecurity() { 
+        const s = await apiCall('get_security_dashboard');
+        const settings = await apiCall('get_settings');
+        const integritySettings = await apiCall('get_integrity_check_settings');
+        const versionSettings = await apiCall('get_version_lock_settings');
+        const whitelistBypass = await apiCall('get_whitelist_bypass_settings');
+        
+        const html = `
+            <div class="grid lg:grid-cols-2 gap-7">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-chart-line mr-2 text-rose-400"></i>Security Telemetry</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between p-3 rounded-xl bg-slate-800/30"><span>Validations Today</span><span class="font-bold text-cyan-400">${s.stats.total_validations_today}</span></div>
+                        <div class="flex justify-between p-3 rounded-xl bg-slate-800/30"><span>Blacklisted IPs</span><span class="font-bold text-red-400">${s.stats.blacklisted_ips}</span></div>
+                        <div class="flex justify-between p-3 rounded-xl bg-slate-800/30"><span>Blacklisted HWIDs</span><span class="font-bold text-red-400">${s.stats.blacklisted_hwids}</span></div>
+                        <div class="flex justify-between p-3 rounded-xl bg-slate-800/30"><span>Bypass Devices</span><span class="font-bold text-amber-400">${s.stats.bypass_devices}</span></div>
+                        <div class="flex justify-between p-3 rounded-xl bg-slate-800/30"><span>Registered Tokens</span><span class="font-bold text-purple-400">${s.stats.registered_tokens}</span></div>
+                        <div class="flex justify-between p-3 rounded-xl bg-slate-800/30"><span>Total Logs</span><span class="font-bold text-slate-300">${s.stats.total_logs.toLocaleString()}</span></div>
+                    </div>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-shield-alt mr-2 text-blue-400"></i>Security Features</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>Integrity Check</span><div class="text-xs text-slate-500">Detects loader tampering</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="integrityCheckToggle" ${integritySettings.integrity_check_enabled ? 'checked' : ''} onchange="toggleIntegrityCheck()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>HWID Salt Rotation</span><div class="text-xs text-slate-500">Weekly HWID salt changes</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="saltRotationToggle" ${settings.hwid_salt_rotation ? 'checked' : ''} onchange="toggleSaltRotation()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>Hardware Token</span><div class="text-xs text-slate-500">Require USB hardware token</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="hardwareTokenToggle" ${settings.require_hardware_token ? 'checked' : ''} onchange="toggleHardwareToken()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>Anti-Leak System</span><div class="text-xs text-slate-500">Detect license sharing</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="antiLeakToggle" ${settings.anti_leak_enabled ? 'checked' : ''} onchange="toggleAntiLeak()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>Version Lock</span><div class="text-xs text-slate-500">Block old loader versions</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="versionLockToggle" ${versionSettings.current_loader_version !== '1.0' ? 'checked' : ''} onchange="toggleVersionLock()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>Kill Switch</span><div class="text-xs text-slate-500">Emergency loader block</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="killSwitchToggle" ${settings.kill_switch ? 'checked' : ''} onchange="toggleKillSwitchFeature()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>Force Maintenance</span><div class="text-xs text-slate-500">Force all users into maintenance</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="forceMaintenanceToggle" ${settings.force_maintenance ? 'checked' : ''} onchange="toggleForceMaintenanceFeature()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <div><span>Maintenance Mode</span><div class="text-xs text-slate-500">Scheduled maintenance</div></div>
+                            <label class="switch">
+                                <input type="checkbox" id="maintenanceModeToggle" ${settings.maintenance_mode ? 'checked' : ''} onchange="toggleMaintenanceModeFeature()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-6 lg:col-span-2">
+                    <h3 class="font-bold text-slate-200 mb-4"><i class="fas fa-check-double mr-2 text-emerald-400"></i>Whitelist Bypass Settings</h3>
+                    <p class="text-xs text-slate-400 mb-4">These settings allow whitelisted devices to bypass specific restrictions</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Kill Switch</span>
+                            <button onclick="toggleWhitelistBypassSetting('kill_switch')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.kill_switch ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.kill_switch ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Force Maintenance</span>
+                            <button onclick="toggleWhitelistBypassSetting('force_maintenance')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.force_maintenance ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.force_maintenance ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Maintenance</span>
+                            <button onclick="toggleWhitelistBypassSetting('maintenance')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.maintenance ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.maintenance ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">HWID Blacklist</span>
+                            <button onclick="toggleWhitelistBypassSetting('hwid_blacklist')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.hwid_blacklist ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.hwid_blacklist ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Key Blacklist</span>
+                            <button onclick="toggleWhitelistBypassSetting('key_blacklist')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.key_blacklist ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.key_blacklist ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Expiry</span>
+                            <button onclick="toggleWhitelistBypassSetting('expiry')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.expiry ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.expiry ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Device Limit</span>
+                            <button onclick="toggleWhitelistBypassSetting('device_limit')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.device_limit ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.device_limit ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Anti-Leak</span>
+                            <button onclick="toggleWhitelistBypassSetting('anti_leak')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.anti_leak ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.anti_leak ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30">
+                            <span class="text-sm">Quota Limit</span>
+                            <button onclick="toggleWhitelistBypassSetting('quota_limit')" class="toggle-bypass-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${whitelistBypass.settings.quota_limit ? 'bg-emerald-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.quota_limit ? 'ENABLED' : 'DISABLED'}
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-800/30 lg:col-span-2">
+                            <span class="text-sm font-bold">Bypass All</span>
+                            <button onclick="toggleWhitelistBypassAll()" class="toggle-bypass-all-btn px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${whitelistBypass.settings.bypass_all ? 'bg-amber-600 text-white' : 'bg-slate-600 text-slate-300'}">
+                                ${whitelistBypass.settings.bypass_all ? 'ALL BYPASS ACTIVE' : 'ALL BYPASS OFF'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-rose-600/20 flex items-center justify-center"><i class="fas fa-shield-alt text-rose-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Security Settings</h1>`;
+    }
+    
+    async function renderAdminProfile() { 
+        const html = `
+            <div class="glass-card rounded-2xl p-6 max-w-md mx-auto">
+                <h3 class="font-bold text-slate-200 mb-5"><i class="fas fa-user-cog mr-2 text-indigo-400"></i>Admin Credentials</h3>
+                <div class="space-y-4">
+                    <div><label class="text-slate-300 text-sm block mb-1">Current Username</label><input type="text" id="curUsername" class="input-modern w-full" placeholder="Current username"></div>
+                    <div><label class="text-slate-300 text-sm block mb-1">New Username</label><input type="text" id="newUsername" class="input-modern w-full" placeholder="New username (min 3 chars)"></div>
+                    <button onclick="updateAdminUsername()" class="bg-indigo-600 hover:bg-indigo-500 w-full py-2.5 rounded-xl transition-all"><i class="fas fa-user-edit mr-2"></i>Change Username</button>
+                    <div class="border-t border-slate-700/50 my-4"></div>
+                    <div><label class="text-slate-300 text-sm block mb-1">Current Password</label><input type="password" id="curPass" class="input-modern w-full"></div>
+                    <div><label class="text-slate-300 text-sm block mb-1">New Password</label><input type="password" id="newPass" class="input-modern w-full"></div>
+                    <button onclick="updateAdminPass()" class="btn-primary w-full py-2.5 rounded-xl"><i class="fas fa-key mr-2"></i>Change Password</button>
+                </div>
+            </div>
+        `;
+        document.getElementById('dynamicContent').innerHTML = html;
+        document.getElementById('pageTitle').innerHTML = `<div class="w-10 h-10 rounded-xl bg-indigo-600/20 flex items-center justify-center"><i class="fas fa-user-astronaut text-indigo-300 text-xl"></i></div><h1 class="text-3xl font-extrabold gradient-text">Admin Core</h1>`;
+    }
+    
+    window.toggleIntegrityCheck = async function() {
+        const settings = await apiCall('get_integrity_check_settings');
+        const newState = !settings.integrity_check_enabled;
+        const res = await apiCall('update_integrity_check_settings', { enabled: newState });
+        if (res.success) {
+            showToast(`Integrity check ${newState ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        } else {
+            showToast('Failed to update integrity check setting', 'error');
+        }
+    };
+    
+    window.toggleSaltRotation = async function() {
+        const settings = await apiCall('get_settings');
+        const newState = !settings.hwid_salt_rotation;
+        const res = await apiCall('update_salt_rotation', { enabled: newState });
+        if (res.success) {
+            showToast(`HWID Salt Rotation ${newState ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        } else {
+            showToast('Failed to update salt rotation', 'error');
+        }
+    };
+    
+    window.toggleHardwareToken = async function() {
+        const settings = await apiCall('get_settings');
+        const newState = !settings.require_hardware_token;
+        const res = await apiCall('update_hardware_token_requirement', { enabled: newState });
+        if (res.success) {
+            showToast(`Hardware token requirement ${newState ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        } else {
+            showToast('Failed to update hardware token setting', 'error');
+        }
+    };
+    
+    window.toggleAntiLeak = async function() {
+        const settings = await apiCall('get_settings');
+        const newState = !settings.anti_leak_enabled;
+        const res = await apiCall('save_settings', { 
+            default_proxy: settings.default_proxy || '', 
+            max_devices_per_key: settings.max_devices_per_key, 
+            anti_leak_enabled: newState 
+        });
+        if (res.success) {
+            showToast(`Anti-Leak system ${newState ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        } else {
+            showToast('Failed to update anti-leak setting', 'error');
+        }
+    };
+    
+    window.toggleVersionLock = async function() {
+        const versionSettings = await apiCall('get_version_lock_settings');
+        const newState = versionSettings.current_loader_version === '1.0';
+        const newVersion = newState ? prompt('Enter new loader version to enforce:', '7.1.0-SECURE') : '1.0';
+        if (newState && !newVersion) return;
+        const res = await apiCall('update_version_lock', { 
+            current_loader_version: newState ? newVersion : '1.0', 
+            min_allowed_version: newState ? '1.0' : '1.0',
+            auto_block_old_versions: newState
+        });
+        if (res.success) {
+            showToast(`Version lock ${newState ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        } else {
+            showToast('Failed to update version lock', 'error');
+        }
+    };
+    
+    window.toggleKillSwitchFeature = async function() {
+        const settings = await apiCall('get_settings');
+        if (settings.kill_switch) {
+            await deactivateKill();
+        } else {
+            const reason = prompt('Enter reason for enabling kill switch:', 'Admin action');
+            if (reason) {
+                const res = await apiCall('activate_kill_switch', { reason });
+                if (res.success) {
+                    showToast('Kill switch activated', 'success');
+                    renderSecurity();
+                    syncKillSwitch();
+                }
+            }
+        }
+    };
+    
+    window.toggleForceMaintenanceFeature = async function() {
+        const settings = await apiCall('get_settings');
+        if (settings.force_maintenance) {
+            const res = await apiCall('disable_force_maintenance');
+            if (res.success) {
+                showToast('Force maintenance disabled', 'success');
+                renderSecurity();
+            }
+        } else {
+            const reason = prompt('Enter reason for force maintenance:', 'System maintenance');
+            if (reason) {
+                const res = await apiCall('enable_force_maintenance', { reason });
+                if (res.success) {
+                    showToast('Force maintenance enabled', 'success');
+                    renderSecurity();
+                }
+            }
+        }
+    };
+    
+    window.toggleMaintenanceModeFeature = async function() {
+        const settings = await apiCall('get_settings');
+        const newMode = !settings.maintenance_mode;
+        const msg = newMode ? prompt('Enter maintenance message:', 'System is under maintenance') : '';
+        const res = await apiCall('update_maintenance', { 
+            maintenance_mode: newMode, 
+            maintenance_message: msg || '',
+            loader_enabled: true,
+            multi_tool_enabled: true,
+            allow_admin_bypass: true
+        });
+        if (res.success) {
+            showToast(`Maintenance mode ${newMode ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        }
+    };
+    
+    window.toggleWhitelistBypassSetting = async function(setting) {
+        const current = await apiCall('get_whitelist_bypass_settings');
+        const newState = !current.settings[setting];
+        const data = {};
+        data[setting] = newState;
+        const res = await apiCall('update_whitelist_bypass_settings', data);
+        if (res.success) {
+            showToast(`Whitelist bypass for ${setting.replace('_', ' ')} ${newState ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        } else {
+            showToast('Failed to update bypass setting', 'error');
+        }
+    };
+    
+    window.toggleWhitelistBypassAll = async function() {
+        const current = await apiCall('get_whitelist_bypass_settings');
+        const newState = !current.settings.bypass_all;
+        const res = await apiCall('update_whitelist_bypass_settings', { bypass_all: newState });
+        if (res.success) {
+            showToast(`Whitelist bypass all ${newState ? 'enabled' : 'disabled'}`, 'success');
+            renderSecurity();
+        } else {
+            showToast('Failed to update bypass all setting', 'error');
+        }
+    };
+    
+    window.unbindDevice = async function(hwid) { 
+        if(confirm('Unbind this device?')) { 
+            const res = await apiCall('unbind_device', { hwid }); 
+            if(res.success) { showToast('Device unbound', 'success'); renderDevices(); } 
+            else showToast('Failed: ' + (res.error || 'Unknown'), 'error'); 
+        } 
+    };
+    
+    window.removeAllowedDevice = async function(hwid) { 
+        if(confirm('Remove from whitelist?')) { 
+            const res = await apiCall('remove_allowed_device', { hwid }); 
+            if(res.success) { showToast('Device removed from whitelist', 'success'); renderAllowedDevices(); } 
+            else showToast('Failed: ' + (res.error || 'Unknown'), 'error'); 
+        } 
+    };
+    
+    window.showAddAllowedModal = function() { 
+        const hwid = prompt('Enter HWID (64 or 128 hex characters):'); 
+        if(hwid && (hwid.length === 64 || hwid.length === 128)) { 
+            const label = prompt('Enter label:'); 
+            const bypass = confirm('Bypass all restrictions?'); 
+            apiCall('add_allowed_device', { hwid, label, bypass_all: bypass }).then(res => { 
+                if(res.success) { showToast('Device added to whitelist', 'success'); renderAllowedDevices(); } 
+                else showToast('Failed: ' + (res.error || 'Unknown'), 'error'); 
+            }); 
+        } else if(hwid) showToast('Invalid HWID format (must be 64 or 128 hex characters)', 'error'); 
+    };
+    
+    window.addHwidToBlacklist = function() { 
+        const hwid = prompt('Enter HWID to blacklist:'); 
+        if(hwid && (hwid.length === 64 || hwid.length === 128)) { 
+            apiCall('add_hwid_to_blacklist', { hwid }).then(res => { 
+                if(res.success) { showToast('HWID blacklisted', 'success'); renderBlacklists(); } 
+                else showToast('Failed', 'error'); 
+            }); 
+        } else if(hwid) showToast('Invalid HWID format', 'error'); 
+    };
+    
+    window.removeHwidFromBlacklist = async function(hwid) { 
+        if(confirm('Remove from blacklist?')) { 
+            const res = await apiCall('remove_hwid_from_blacklist', { hwid }); 
+            if(res.success) { showToast('HWID removed from blacklist', 'success'); renderBlacklists(); } 
+        } 
+    };
+    
+    window.addIpToBlacklist = function() { 
+        const ip = prompt('Enter IP address to blacklist:'); 
+        if(ip) { 
+            apiCall('add_ip_to_blacklist', { ip }).then(res => { 
+                if(res.success) { showToast('IP blacklisted', 'success'); renderBlacklists(); } 
+                else showToast(res.error || 'Failed', 'error'); 
+            }); 
+        } 
+    };
+    
+    window.removeIpFromBlacklist = async function(ip) { 
+        if(confirm('Remove IP from blacklist?')) { 
+            const res = await apiCall('remove_ip_from_blacklist', { ip }); 
+            if(res.success) { showToast('IP removed from blacklist', 'success'); renderBlacklists(); } 
+        } 
+    };
+    
+    window.addVersionToBlacklist = function() { 
+        const version = prompt('Enter version to blacklist:'); 
+        if(version) { 
+            apiCall('add_version_to_blacklist', { version }).then(res => { 
+                if(res.success) { showToast('Version blacklisted', 'success'); renderBlacklists(); } 
+            }); 
+        } 
+    };
+    
+    window.removeVersionFromBlacklist = async function(version) { 
+        if(confirm('Remove version from blacklist?')) { 
+            const res = await apiCall('remove_version_from_blacklist', { version }); 
+            if(res.success) { showToast('Version removed from blacklist', 'success'); renderBlacklists(); } 
+        } 
+    };
+    
+    window.toggleMaintenanceMode = async function() { 
+        const msg = document.getElementById('maintenanceMsg')?.value; 
+        const settings = await apiCall('get_settings'); 
+        const newMode = !settings.maintenance_mode; 
+        await apiCall('update_maintenance', { maintenance_mode: newMode, maintenance_message: msg, loader_enabled: true, multi_tool_enabled: true, allow_admin_bypass: true }); 
+        showToast(`Maintenance mode ${newMode ? 'enabled' : 'disabled'}`, 'success'); 
+        renderMaintenance(); 
+    };
+    
+    window.toggleForceMaintenance = async function() { 
+        const settings = await apiCall('get_settings'); 
+        if(settings.force_maintenance) { 
+            await apiCall('disable_force_maintenance'); 
+            showToast('Force maintenance disabled', 'success'); 
+        } else { 
+            const reason = prompt('Reason for force maintenance:'); 
+            if(reason) { 
+                await apiCall('enable_force_maintenance', { reason }); 
+                showToast('Force maintenance enabled', 'success'); 
+            } 
+        } 
+        renderMaintenance(); 
+    };
+    
+    window.uploadLoaderFile = async() => { 
+        const file = document.getElementById('loaderFile')?.files[0]; 
+        if (!file) return showToast('Select loader file', 'error'); 
+        const fd = new FormData(); 
+        fd.append('action','upload_loader'); 
+        fd.append('loader_file',file); 
+        const r = await fetch(API_URL,{method:'POST',body:fd,credentials:'include'}); 
+        const j = await r.json(); 
+        showToast(j.success?'Loader deployed successfully':'Upload failed', j.success?'success':'error'); 
+        if(j.success) renderLoaderMulti(); 
+    };
+    
+    window.uploadMultiFile = async() => { 
+        const file = document.getElementById('multiFile')?.files[0]; 
+        if (!file) return showToast('Select multi tool file', 'error'); 
+        const fd = new FormData(); 
+        fd.append('action','upload_multi'); 
+        fd.append('multi_file',file); 
+        const r = await fetch(API_URL,{method:'POST',body:fd,credentials:'include'}); 
+        const j = await r.json(); 
+        showToast(j.success?'Multi tool uploaded':'Upload error', j.success?'success':'error'); 
+    };
+    
+    window.downloadLoader = async() => { 
+        const res = await apiCall('get_loader_content'); 
+        if(res.success) { 
+            const blob = new Blob([res.content], {type:'text/plain'}); 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = 'loader.py'; 
+            a.click(); 
+        } else showToast('Loader not found', 'error'); 
+    };
+    
+    window.downloadMulti = async() => { 
+        const res = await apiCall('get_multi_content'); 
+        if(res.success) { 
+            const blob = new Blob([res.content], {type:'text/plain'}); 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = 'multi.py'; 
+            a.click(); 
+        } else showToast('Multi tool not found', 'error'); 
+    };
+    
+    window.restoreBackup = async function(filename) { 
+        if(confirm(`Restore backup ${filename}?`)) { 
+            const res = await apiCall('restore_enhanced_backup', { filename }); 
+            if(res.success) { showToast('Backup restored successfully', 'success'); renderBackups(); } 
+            else showToast('Restore failed', 'error'); 
+        } 
+    };
+    
+    window.downloadBackup = async function(filename) { 
+        window.location.href = `admin_data/backups/${filename}`; 
+    };
+    
+    window.autoCheckProxies = async function() { 
+        showToast('Checking proxies...', 'info'); 
+        const res = await apiCall('auto_check_proxies'); 
+        showToast(res.message, 'success'); 
+        renderProxies(); 
+    };
+    
+    window.uploadProxyFile = function() { 
+        const input = document.createElement('input'); 
+        input.type = 'file'; 
+        input.onchange = async (e) => { 
+            const file = e.target.files[0]; 
+            const fd = new FormData(); 
+            fd.append('action','upload_proxy_file'); 
+            fd.append('proxy_file',file); 
+            const r = await fetch(API_URL,{method:'POST',body:fd,credentials:'include'}); 
+            const j = await r.json(); 
+            showToast(`Imported ${j.imported} proxies`, 'success'); 
+            renderProxies(); 
+        }; 
+        input.click(); 
+    };
+    
+    window.deleteProxy = async function(id) { 
+        if(confirm('Delete this proxy?')) { 
+            const res = await apiCall('delete_proxy', { proxy_id: id }); 
+            if(res.success) { showToast('Proxy deleted', 'success'); renderProxies(); } 
+        } 
+    };
+    
+    window.clearLogs = async function() { 
+        if(confirm('Clear all logs?')) { 
+            await apiCall('clear_logs'); 
+            showToast('Logs cleared', 'success'); 
+            renderLogsLeaks(); 
+        } 
+    };
+    
+    window.clearLeaks = async function() { 
+        if(confirm('Clear all leak records?')) { 
+            await apiCall('clear_leaks'); 
+            showToast('Leaks cleared', 'success'); 
+            renderLogsLeaks(); 
+        } 
+    };
+    
+    window.updateAdminPass = async function() { 
+        const cur = document.getElementById('curPass')?.value; 
+        const nw = document.getElementById('newPass')?.value; 
+        if (!nw) return showToast('Enter new password', 'error'); 
+        if (nw.length < 6) return showToast('Password must be at least 6 characters', 'error'); 
+        const res = await apiCall('change_admin_password',{current_password:cur,new_password:nw}); 
+        showToast(res.success?'Password changed':res.error, res.success?'success':'error'); 
+        if(res.success){ document.getElementById('curPass').value = ''; document.getElementById('newPass').value = ''; } 
+    };
+    
+    window.updateAdminUsername = async function() { 
+        const cur = document.getElementById('curUsername')?.value; 
+        const nw = document.getElementById('newUsername')?.value; 
+        if (!nw) return showToast('Enter new username', 'error'); 
+        if (nw.length < 3) return showToast('Username must be at least 3 characters', 'error'); 
+        const res = await apiCall('change_admin_username',{current_username:cur,new_username:nw}); 
+        showToast(res.success?'Username changed':res.error, res.success?'success':'error'); 
+        if(res.success){ document.getElementById('curUsername').value = ''; document.getElementById('newUsername').value = ''; } 
+    };
+    
+    async function loadSection(section) {
+        currentActiveSection = section;
+        const content = document.getElementById('dynamicContent');
+        content.innerHTML = `<div class="flex justify-center items-center h-64"><div class="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div></div>`;
+        try {
+            if (section === 'dashboard') await renderDashboard();
+            else if (section === 'keys') await renderKeys();
+            else if (section === 'devices') await renderDevices();
+            else if (section === 'allowed') await renderAllowedDevices();
+            else if (section === 'blacklists') await renderBlacklists();
+            else if (section === 'maintenance') await renderMaintenance();
+            else if (section === 'loader') await renderLoaderMulti();
+            else if (section === 'backups') await renderBackups();
+            else if (section === 'proxies') await renderProxies();
+            else if (section === 'logs') await renderLogsLeaks();
+            else if (section === 'security') await renderSecurity();
+            else if (section === 'admin') await renderAdminProfile();
+            else content.innerHTML = '<div class="text-center text-slate-500 p-12">Module offline</div>';
+        } catch(e) { showToast(e.message, 'error'); content.innerHTML = '<div class="text-red-400 text-center p-10">Failed to load component</div>'; }
+    }
+    
+    document.getElementById('doLoginBtn').onclick = async () => {
+        const user = document.getElementById('loginUser').value, pass = document.getElementById('loginPass').value;
+        if (!user || !pass) { showToast('Access credentials required', 'error'); return; }
+        const btn = document.getElementById('doLoginBtn');
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+        btn.disabled = true;
+        const res = await apiCall('login', { username: user, password: pass });
+        if (res.success && res.logged_in) {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('hidden');
+            startKillMonitor();
+            loadSection('dashboard');
+            showToast(`Welcome, ${user} — nexus online`, 'success');
+        } else showToast(res.error || 'Authentication failure', 'error');
+        btn.innerHTML = origHtml;
+        btn.disabled = false;
+    };
+    
+    document.getElementById('logoutBtn').onclick = async () => { if(killSwitchMonitor) clearInterval(killSwitchMonitor); await apiCall('logout'); window.location.reload(); };
+    document.getElementById('emergencyKillBtn').onclick = async () => { await syncKillSwitch(); if(currentKS) deactivateKill(); else activateKill(); };
+    
+    document.querySelectorAll('.sidebar-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            loadSection(el.dataset.section);
+        });
+    });
+    
+    (async function initAuth() { try { const auth = await apiCall('check_auth'); if(auth.logged_in) { document.getElementById('loginOverlay').classList.add('hidden'); document.getElementById('appContainer').classList.remove('hidden'); startKillMonitor(); loadSection('dashboard'); } } catch(e) {} })();
+    
+    function generateParticles() {
+        const container = document.getElementById('particlesContainer');
+        for (let i = 0; i < 70; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            const s = Math.random() * 4 + 1;
+            p.style.width = s + 'px';
+            p.style.height = s + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 18 + 's';
+            p.style.animationDuration = Math.random() * 14 + 7 + 's';
+            p.style.opacity = Math.random() * 0.4;
+            p.style.background = `radial-gradient(circle, ${Math.random() > 0.6 ? '#3B82F6' : '#A855F7'}, transparent)`;
+            container.appendChild(p);
+        }
+    }
+    generateParticles();
+    window.showToast = showToast;
+    window.LOADER_VERSION = '7.1.0-SECURE';
+</script>
+</body>
+</html>
