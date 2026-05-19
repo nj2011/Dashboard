@@ -1,5 +1,19 @@
 <?php
 
+// ===== RAILWAY PERSISTENT STORAGE FIX =====
+// Use Railway volume if available, otherwise use local directory
+$railway_volume = getenv('RAILWAY_VOLUME_MOUNT_PATH');
+if ($railway_volume && is_dir($railway_volume) && is_writable($railway_volume)) {
+    $data_dir = $railway_volume . '/admin_data';
+} else {
+    $data_dir = __DIR__ . '/admin_data';
+}
+
+// Create data directory if it doesn't exist
+if (!file_exists($data_dir)) {
+    mkdir($data_dir, 0755, true);
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('precision', 16);
@@ -68,13 +82,8 @@ define('MAX_DEVICES_PER_KEY', 8);
 define('BACKUP_MAX_FILES', 50);
 define('SHARED_SECRET', '4_1_131_231_516_616_744_120_103_956_275_158_533_1441_256_119_-204_1097_0_339_0_1008');
 
-// Railway persistent storage support
-$railway_volume = getenv('RAILWAY_VOLUME_MOUNT_PATH');
-if ($railway_volume && is_writable($railway_volume)) {
-    $data_dir = $railway_volume . '/admin_data';
-} else {
-    $data_dir = __DIR__ . '/admin_data';
-}
+// Use the DATA_DIR constant from above
+$data_dir = DATA_DIR;
 if (!file_exists($data_dir)) mkdir($data_dir, 0755, true);
 
 $session_path = $data_dir . '/sessions';
